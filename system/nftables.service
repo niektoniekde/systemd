@@ -1,0 +1,32 @@
+[Unit]
+Description=nftables static rule set
+Documentation=man:nftables.service(8)
+Before=shutdown.target
+Conflicts=shutdown.target firewalld.service
+DefaultDependencies=no
+ConditionPathExists=/etc/nftables/rules/main.nft
+Requires=systemd-networkd.service
+Wants=docker.service
+Requires=sys-devices-virtual-net-dmzbr100.device
+Requires=sys-devices-virtual-net-lanbr118.device
+After=systemd-networkd.service
+After=docker.service
+After=sys-devices-virtual-net-dmzbr100.device
+After=sys-devices-virtual-net-lanbr118.device
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+StandardInput=null
+ProtectSystem=full
+ProtectHome=true
+ExecStart=/usr/sbin/nft -c 'include "/etc/nftables/rules/main.nft"'
+ExecStart=/usr/sbin/nft 'flush ruleset; include "/etc/nftables/rules/main.nft"'
+ExecStop=/usr/sbin/nft 'flush ruleset'
+ExecReload=/usr/sbin/nft -c 'include "/etc/nftables/rules/main.nft"'
+ExecReload=/usr/sbin/nft 'flush ruleset; include "/etc/nftables/rules/main.nft"'
+Restart=on-failure
+RestartSec=30s
+
+[Install]
+WantedBy=multi-user.target

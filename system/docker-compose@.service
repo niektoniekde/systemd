@@ -1,0 +1,15 @@
+[Unit]
+Description=%i Docker service
+After=docker.service
+Requires=docker.service
+AssertPathExists=/usr/local/etc/containers/%i/docker-compose.yml
+
+[Service]
+TimeoutStartSec=0
+Restart=always
+WorkingDirectory=/usr/local/etc/containers/%i
+ExecStart=/usr/bin/docker-compose --file /usr/local/etc/containers/%i/docker-compose.yml up --force-recreate
+ExecStop=/usr/bin/docker-compose --file /usr/local/etc/containers/%i/docker-compose.yml down
+
+[Install]
+WantedBy=multi-user.target
