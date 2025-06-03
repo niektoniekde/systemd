@@ -5,14 +5,9 @@ Before=shutdown.target
 Conflicts=shutdown.target firewalld.service
 DefaultDependencies=no
 ConditionPathExists=/etc/nftables/rules/main.nft
+# require systemd-networkd
 Requires=systemd-networkd.service
-Wants=docker.service
-Requires=sys-devices-virtual-net-dmzbr100.device
-Requires=sys-devices-virtual-net-lanbr118.device
 After=systemd-networkd.service
-After=docker.service
-After=sys-devices-virtual-net-dmzbr100.device
-After=sys-devices-virtual-net-lanbr118.device
 
 [Service]
 Type=oneshot
